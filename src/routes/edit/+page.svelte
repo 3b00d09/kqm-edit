@@ -10,7 +10,7 @@
         word:string
     }
 
-    const targetWords = ["b1"]
+    let targetWords:string[] = []
     let foundWords:word[] = []
     
     let currIndex = 0;
@@ -31,9 +31,13 @@
         htmlData = JSON.parse(localStorage.getItem("html-data") || "")
         const doc = new DOMParser().parseFromString(htmlData,"text/html")
         const something = HtmlToMarkdown(doc) 
-        mkDown = something.body.textContent ?? "" 
-
+        mkDown = something.body.textContent ?? ""
         trimTextareaLines(mkDown);
+
+        const words = await fetch("targetWords.txt")
+        const res = await words.text()
+        targetWords = res.split(/\s+/);
+        console.log(targetWords)
     })
 
     const trimTextareaLines = (markdown: string) => {
