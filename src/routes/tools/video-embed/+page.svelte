@@ -45,8 +45,8 @@
 </script>
 
 <div class="m-4">
-    <input bind:value={embedLink} class="p-2 rounded-full" type="text" placeholder="Youtube link"/>
-    <input bind:value={thumbnailUrl} class = "p-2 rounded-full" type="text" placeholder="image url"/>
+    <input bind:value={embedLink} class="p-2 rounded-full" type="text" placeholder="Embed Code.."/>
+    <input bind:value={thumbnailUrl} class = "p-2 rounded-full" type="text" placeholder="Image URL.."/>
     <button class="p-2" on:click={convertLinkToFrame}>Convert</button>
     <div class="grid bg-gray-900 my-6">
         <pre class="max-w-[100%] overflow-x-auto word-break">
