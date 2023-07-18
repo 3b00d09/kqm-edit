@@ -3,9 +3,15 @@
     let embedLink:string = ""
     let messageDiv:HTMLDivElement;
     let embedContainer:HTMLElement;
+    let copyBtn:HTMLButtonElement;
+    let prevInput:string = "";
 
     const convertLinkToFrame = () =>{
 
+        if (prevInput === embedLink) return
+        copyBtn.classList.remove("hidden")
+        prevInput = embedLink
+    
         // need to contain everything in parent for the nice center alignmenet with not entire bg being black
         const parentContainer = document.createElement("div")
         parentContainer.classList.add("custom-iframe-parent")
@@ -14,6 +20,7 @@
         const thumbnailPlaceholder = document.createElement("div")
         thumbnailPlaceholder.classList.add("placeholder-div")
         thumbnailPlaceholder.setAttribute("onclick", "replaceEmbed(event)")
+        thumbnailPlaceholder.setAttribute("data-embed-url", embedLink)
         parentContainer.appendChild(thumbnailPlaceholder)
 
         // the play btn img 
@@ -38,7 +45,7 @@
                     elementToRemove = e.target
                 }
                 elementToRemove.parentNode.style.height = "auto"
-                const embedLink = ${embedLink}
+                const embedLink = elementToRemove.dataset.embedUrl;
                 const tempDOM = new DOMParser().parseFromString(embedLink,"text/html")
                 const newFrameElement = tempDOM.querySelector("iframe")
                 newFrameElement.height = "100%"
@@ -93,7 +100,7 @@
         if(embedContainer.textContent){
             try{
             navigator.clipboard.writeText(embedContainer.textContent)
-            messageDiv.textContent = "Copied Sucessfully"
+            messageDiv.textContent = "Copied Successfully"
             messageDiv.style.backgroundColor = ("#DDFFDD")
             }
             catch(err){
@@ -109,13 +116,13 @@
 <div class="m-4">
     <input bind:value={embedLink} class="p-2 rounded-full" type="text" placeholder="Embed Code.."/>
     <button class="p-2" on:click={convertLinkToFrame}>Convert</button>
+    <button bind:this={copyBtn} on:click={copyToClipboard} class="p-2 hidden">Copy</button>
+    <div bind:this={messageDiv} class="message mt-4"></div>
     <div class="grid bg-gray-900 my-6">
         <pre class="max-w-[100%] overflow-x-auto word-break">
             <code bind:this={embedContainer}></code>
         </pre>
     </div>
-    <button on:click={copyToClipboard} class="p-2">Copy</button>
-    <div bind:this={messageDiv} class="message mt-4"></div>
 </div>
 
 <style>
