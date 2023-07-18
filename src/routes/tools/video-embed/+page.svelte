@@ -30,11 +30,18 @@
         scriptTag.textContent = 
          `
             const replaceEmbed = (e) =>{
-                e.target.parentNode.style.height = "auto"
+                let elementToRemove;
+                if(e.target.nodeName === "IMG"){
+                    elementToRemove = e.target.parentNode;
+                }
+                else{
+                    elementToRemove = e.target
+                }
+                elementToRemove.parentNode.style.height = "auto"
                 const embedLink = ${embedLink}
                 const tempDOM = new DOMParser().parseFromString(embedLink,"text/html")
                 const newFrameElement = tempDOM.querySelector("iframe")
-                e.target.replaceWith(newFrameElement)
+                elementToRemove.replaceWith(newFrameElement)
             }
         `
         styleTag.textContent = 
