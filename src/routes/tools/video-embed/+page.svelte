@@ -41,6 +41,8 @@
                 const embedLink = ${embedLink}
                 const tempDOM = new DOMParser().parseFromString(embedLink,"text/html")
                 const newFrameElement = tempDOM.querySelector("iframe")
+                newFrameElement.height = "100%"
+                newFrameElement.width = "100%"
                 elementToRemove.replaceWith(newFrameElement)
             }
         `
