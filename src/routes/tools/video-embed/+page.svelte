@@ -51,7 +51,7 @@
         .placeholder-div{
             display: grid;
             place-items: center;
-            width: 60%;
+            width: 80%;
             height: 100%;
             background-color: black;
         }
@@ -66,7 +66,7 @@
 
         .custom-iframe-parent > iframe{
             aspect-ratio: 16/9;
-            max-width: 80%;
+            width: 80%;
             display: block;
             margin: auto;
         }
