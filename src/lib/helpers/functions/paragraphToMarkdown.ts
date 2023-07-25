@@ -1,6 +1,12 @@
 export default function paragraphToMarkdown(doc:Document){
     
     doc.querySelectorAll("p").forEach((paragraph)=>{
+        // <strong> will get mixed in with <p> and looks yikes
+        paragraph.querySelectorAll("strong").forEach((el) =>{
+            
+            if(el.textContent) el.replaceWith("\n \n" + el.innerText + "\n \n")
+        })
+
         paragraph.replaceWith("\n",paragraph.innerText, "\n")
     })
 

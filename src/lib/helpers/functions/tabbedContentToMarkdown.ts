@@ -1,6 +1,6 @@
 export default function tabbedContentToMarkdown(doc:Document){
 
-    doc.querySelectorAll(".wp-block-ub-tabbed-content").forEach((tabbed)=>{
+    doc.querySelectorAll(".wp-block-ub-tabbed-content, .wp-block-ub-tabbed-content-underline").forEach((tabbed)=>{
         
         // go over tab panels and just yoink them, dont need to care about headers every tab panel starts with a header anyway
         let map:Array<Element> = []
