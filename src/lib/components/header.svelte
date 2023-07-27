@@ -6,6 +6,7 @@
     <ul class="list-none flex gap-2 justify-start items-center">
         <li><a href="/">Home</a></li>
         <li><a href="/edit">Edit MD Page</a></li>
+        <li><a href="/translate">Translate</a></li>
         <li><a href="/usage">How to use</a></li>
         <li><a href="/issues">Issues</a></li>
         <li><a href="/tools/video-embed">Tools</a></li>

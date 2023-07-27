@@ -3,8 +3,6 @@
     import SvelteMarkdown from 'svelte-markdown'
     import HtmlToMarkdown from "$lib/helpers/HtmlToMarkdown";
 
-    export let data;
-
     interface word{
         index:number,
         word:string
@@ -16,8 +14,8 @@
     let currIndex = 0;
 
     let htmlData:any;
-    let mkDown:string = ""
-    let mkDownEditor:HTMLTextAreaElement;
+    let mkDown:string | undefined | null
+    let mkDownEditor:HTMLDivElement;
     let contentContainer:HTMLDivElement;
     
     let wordsExist = false;
@@ -28,16 +26,20 @@
 
 
     onMount(async () => {
-        htmlData = JSON.parse(localStorage.getItem("html-data") || "")
+        htmlData = localStorage.getItem("html-data")
+        if(!htmlData){
+            return
+        } 
+        htmlData = JSON.parse(htmlData)
         const doc = new DOMParser().parseFromString(htmlData,"text/html")
         const something = HtmlToMarkdown(doc) 
-        mkDown = something.body.textContent ?? ""
+        mkDown = something.body.textContent
+        if(!mkDown) return;
         trimTextareaLines(mkDown);
 
         const words = await fetch("targetWords.txt")
         const res = await words.text()
         targetWords = res.split(/\s+/);
-        console.log(targetWords)
     })
 
     const trimTextareaLines = (markdown: string) => {
@@ -51,9 +53,8 @@
 
     }
 
-    const handleChange = (event: Event) => {
-        const textarea = event.target as HTMLTextAreaElement;
-        mkDown = textarea.value;
+    const handleChange = () => {
+        mkDown = mkDownEditor.textContent || ""
     };
 
     const scanText = () =>{
@@ -63,7 +64,7 @@
         foundWords = []
         // will hold the index of the word in textarea 
         let tempIndex = 0
-        mkDown.split(" ").forEach((word)=>{
+        mkDown?.split(" ").forEach((word)=>{
             // fully upper all > check > if exists, check original version
             targetWords.forEach((targetWord)=>{
                 let tempWord = word.toUpperCase()
@@ -108,45 +109,59 @@
     const scrollTextarea = () =>{
         mkDownEditor.blur()
         mkDownEditor.focus()
-        mkDownEditor.setSelectionRange(foundWords[currIndex].index, foundWords[currIndex].index + foundWords[currIndex].word.length)
-        mkDownEditor.scrollTop = mkDownEditor.scrollHeight * (foundWords[currIndex].index / mkDown.length);
-
+        // will use this to navigate the markdown editor with selection range 
+        const range = document.createRange()
+        range.setStart(mkDownEditor, foundWords[currIndex].index)
+        range.setEnd(mkDownEditor, foundWords[currIndex].index + foundWords[currIndex].word.length)
+        const selection = window.getSelection()
+        selection?.removeAllRanges()
+        selection?.addRange(range)
     }
 
 </script>
 
 <div class="m-4">
-    <button on:click={scanText}>Scan</button>
-    {#if loadingScan}
-    <p>Loading</p>
-    {/if}
 
-    {#if !loadingScan && wordsExist}
-        <div class="sticky top-0 bg-[#1a1a1a]">
-            <p>{currIndex + 1} / {foundWords.length}</p>
-            <button on:click={previousTargetWord}>Previous</button>
-            <button on:click={nextTargetWord}>Next</button>
-            <button on:click={()=>wordsExist = !wordsExist}>Close</button>
-        </div>
-    {/if}
+    {#if !mkDown}
+        <div>Please input an HTML element first <a class="text-sky-400" href="/">here</a></div>
+    {:else}
 
-    {#if data}
-        <div class="h-full m-4 overflow-auto">
-            
+        <button on:click={scanText}>Scan</button>
+        {#if loadingScan}
+            <p>Loading</p>
+        {/if}
 
-                <div class="flex gap-4 mb-2">
-                    <button class="flex-1" on:click={()=>toggleEditor = !toggleEditor}>{toggleEditor ? 'Hide Editor' : 'Show Editor'}</button>
-                    <button class="flex-1" on:click={()=>toggleContent = !toggleContent}>{toggleContent ? 'Hide Content' : 'Show Content'}</button>
-
-                </div>
-                <div class="flex gap-4">
-                    <textarea class="p-2 flex-1 h-screen overflow-auto {toggleEditor ? "block" : "hidden"}" bind:this={mkDownEditor} on:input={handleChange} value={mkDown}/>
-                    <div bind:this={contentContainer} class="flex-1 p-2 bg-gray-800 {toggleContent ? "block" : "hidden"} h-screen overflow-auto">
-                        <SvelteMarkdown source={mkDown}/>
-                    </div>
-                </div>
-
+        {#if !loadingScan && wordsExist}
+            <div class="sticky top-0 bg-[#1a1a1a]">
+                <p>{currIndex + 1} / {foundWords.length}</p>
+                <button on:click={previousTargetWord}>Previous</button>
+                <button on:click={nextTargetWord}>Next</button>
+                <button on:click={()=>wordsExist = !wordsExist}>Close</button>
             </div>
-          
-    {/if}
+        {/if}
+
+            <div class="h-full m-4 overflow-auto">
+                
+
+                    <div class="flex gap-4 mb-2">
+                        <button class="flex-1" on:click={()=>toggleEditor = !toggleEditor}>{toggleEditor ? 'Hide Editor' : 'Show Editor'}</button>
+                        <button class="flex-1" on:click={()=>toggleContent = !toggleContent}>{toggleContent ? 'Hide Content' : 'Show Content'}</button>
+
+                    </div>
+                    <div class="flex gap-4">
+                        <div class="bg-gray-800 whitespace-pre-wrap rounded-lg hover:cursor-pointer p-4 flex-1 h-screen overflow-auto {toggleEditor ? "block" : "hidden"}" 
+                        bind:this={mkDownEditor} 
+                        on:input={handleChange}
+                        contenteditable={true}
+                        >
+                        {mkDown}
+                        </div>
+                        <div bind:this={contentContainer} class="flex-1 p-2 bg-gray-800 {toggleContent ? "block" : "hidden"} h-screen overflow-auto">
+                            <SvelteMarkdown source={mkDown}/>
+                        </div>
+                    </div>
+
+                </div>
+        {/if}
+    
 </div>
