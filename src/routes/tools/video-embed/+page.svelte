@@ -11,6 +11,9 @@
         if (prevInput === embedLink) return
         copyBtn.classList.remove("hidden")
         prevInput = embedLink
+        // encoding that we undo later on to avoid the iframe crashing the html element causing the image to go poof
+        embedLink = embedLink.replaceAll("<","%3C");
+        embedLink = embedLink.replaceAll(">", "%3E")
     
         // need to contain everything in parent for the nice center alignmenet with not entire bg being black
         const parentContainer = document.createElement("div")
@@ -43,6 +46,8 @@
                     elementToRemove = e.target
                 }
                 elementToRemove.parentNode.style.height = "auto"
+                elementToRemove.dataset.embedUrl = elementToRemove.dataset.embedUrl.replaceAll("%3C","<")
+                elementToRemove.dataset.embedUrl = elementToRemove.dataset.embedUrl.replaceAll("%3E",">")
                 const embedLink = elementToRemove.dataset.embedUrl;
                 const tempDOM = new DOMParser().parseFromString(embedLink,"text/html")
                 const newFrameElement = tempDOM.querySelector("iframe")
