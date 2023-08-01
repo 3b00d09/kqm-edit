@@ -31,8 +31,6 @@
         const scriptTag = document.createElement("script")
         const styleTag = document.createElement("style")
 
-        // put the embed element in a string so it doesnt crash the script tags 
-        embedLink = "'" + embedLink + "'";
 
         scriptTag.textContent = 
         `
