@@ -32,10 +32,10 @@
         const styleTag = document.createElement("style")
 
         // put the embed element in a string so it doesnt crash the script tags 
-        embedLink = "`" + embedLink + "`"
+        embedLink = "'" + embedLink + "'";
 
         scriptTag.textContent = 
-         `
+        `
             const replaceEmbed = (e) =>{
                 let elementToRemove;
                 if(e.target.nodeName === "IMG"){
