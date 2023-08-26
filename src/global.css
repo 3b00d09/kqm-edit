@@ -64,6 +64,10 @@ html, body {
   background-color: #1a1a1a;
 }
 
+th{
+  font-weight: normal;
+}
+
 @tailwind base;
 h1 {
   @apply text-5xl;
