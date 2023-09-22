@@ -1,49 +1,68 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-    let htmlData:any;
+    let translateDate:any;
     let mkDown:HTMLElement
     let contentTable:string|undefined
+    let textareaContent: string
+    // to make our page wait for us to fetch local storage then display whatever it needs to display (prob can use await instead of a variable)
+    let fetchedLocalStorage:boolean = false;
 
     onMount(async () => {
-        htmlData = localStorage.getItem("html-data")
-        if(!htmlData){
+        translateDate = localStorage.getItem("translate-data")
+        fetchedLocalStorage = true
+        if(!translateDate){
             return
         } 
-        htmlData = JSON.parse(htmlData)
-        const doc = new DOMParser().parseFromString(htmlData,"text/html")
-        mkDown = doc.body ?? ""
-        let temp:HTMLElement|null = mkDown.querySelector(".entry-content")
-        temp?.querySelectorAll("img, .wp-block-embed, figure").forEach((el) =>{
-            el.remove()
-        })
-        if(temp) createTable(temp)
+        translateDate = JSON.parse(translateDate)
+        console.log(translateDate)
     })
-
-    const createTable = (doc:HTMLElement) =>{
-        const table = document.createElement("table")
-        Array.from(doc.children).forEach((child) =>{
-            if(child.innerHTML){
-                const row = document.createElement("tr")
-                row.classList.add("border-r-2", "w-full")
-                const firstCol = document.createElement("td")
-                firstCol.innerHTML = child.innerHTML
-                firstCol.classList.add("p-2")
-                const secondCol = firstCol.cloneNode(true)
-                row.append(firstCol, secondCol)
-                table.append(row)
-            }
-        })
-        contentTable = table.outerHTML
+    
+    const setTranslateData = () =>{
+        const trimmed = textareaContent.replace(/<img[^>]*>|<figure[^>]*>[\s\S]*?<\/figure>|<a[^>]*>[\s\S]*?<\/a>/g, '').replace(/>\s+</g, '><').replace(/<!--.*?-->/g, '').replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/<h[123456]/g, '<hr class="border-2">$&').trim();
+        localStorage.setItem("translate-data", JSON.stringify(trimmed))
+        location.reload()
     }
+
+    // const createTable = (doc:HTMLElement) =>{
+    //     const table = document.createElement("table")
+    //     Array.from(doc.children).forEach((child) =>{
+    //         if(child.innerHTML){
+    //             const row = document.createElement("tr")
+    //             row.classList.add("border-r-2", "w-full")
+    //             const firstCol = document.createElement("td")
+    //             firstCol.innerHTML = child.innerHTML
+    //             firstCol.classList.add("p-2")
+    //             const secondCol = firstCol.cloneNode(true)
+    //             row.append(firstCol, secondCol)
+    //             table.append(row)
+    //         }
+    //     })
+    //     contentTable = table.outerHTML
+    // }
 
 </script>
 
 <div class="m-4"> 
-    {#if contentTable}
-        {@html contentTable}
-    {:else}
-        <div>Please input an HTML element first <a class="text-sky-400" href="/">here</a></div>
+    {#if fetchedLocalStorage}
+        {#if translateDate}
+        <table class="border-2">
+            <tr>
+                <td class="p-2">
+                    {@html translateDate}
+                </td>
+                <td class="p-2">
+                    {@html translateDate}
+                </td>
+            </tr>
+        </table>
+
+        {:else}
+            <div class="flex flex-col gap-4 items-center">
+                <textarea class="w-4/5" name="html-input" bind:value={textareaContent}></textarea>
+                <button class="p-4" type="submit" on:click={setTranslateData}>Convert to columns</button>   
+            </div>
+        {/if}
     {/if}
     
 </div>
