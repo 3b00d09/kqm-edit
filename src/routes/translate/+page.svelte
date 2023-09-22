@@ -24,6 +24,11 @@
         location.reload()
     }
 
+    const clearTranslation = () =>{
+        localStorage.removeItem("translate-data")
+        location.reload()
+    }
+
     // const createTable = (doc:HTMLElement) =>{
     //     const table = document.createElement("table")
     //     Array.from(doc.children).forEach((child) =>{
@@ -46,6 +51,7 @@
 <div class="m-4"> 
     {#if fetchedLocalStorage}
         {#if translateDate}
+        <button class="m-2 w-full p-4" on:click={clearTranslation}>Clear Translation</button>
         <table class="border-2">
             <tr>
                 <td class="p-2">
