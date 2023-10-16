@@ -15,11 +15,39 @@
             return
         } 
         translateDate = JSON.parse(translateDate)
-        console.log(translateDate)
+        const data = new DOMParser().parseFromString(translateDate, "text/html")
+        data.querySelectorAll(".wp-block-ub-tabbed-content").forEach((el, i)=>{
+            // gets rid of all the headers of the tabs
+            if(el.firstChild) el.removeChild(el.firstChild)
+            el.childNodes.forEach((child)=>{
+                child.before(document.createElement("hr"))
+                
+            })
+        })
+
+        data.querySelectorAll(".wp-block-ub-tabbed-content-accordion-toggle").forEach((el)=>{
+            el.remove()
+        })
+
+        data.querySelectorAll(".wp-block-ub-content-toggle-accordion-title-wrap").forEach((el)=>{
+            if(el.firstChild){
+                el.firstChild.childNodes.forEach((child)=>{
+                    child.before(document.createElement("hr"))
+                })
+            }
+        })
+
+        translateDate = data.body.innerHTML
     })
     
     const setTranslateData = () =>{
-        const trimmed = textareaContent.replace(/<img[^>]*>|<figure[^>]*>[\s\S]*?<\/figure>|<a[^>]*>[\s\S]*?<\/a>/g, '').replace(/>\s+</g, '><').replace(/<!--.*?-->/g, '').replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '').replace(/<h[123456]/g, '<hr class="border-2">$&').trim();
+        const trimmed = textareaContent.replace(/<img[^>]*>|<figure[^>]*>[\s\S]*?<\/figure>|<a[^>]*>[\s\S]*?<\/a>|style="[^"]*"/g, '')
+                                        .replace(/>\s+</g, '><')
+                                        .replace(/<!--.*?-->/g, '')
+                                        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                                        .replace(/<h[123456]/g, '<hr>$&')
+                                        .trim();
+
         localStorage.setItem("translate-data", JSON.stringify(trimmed))
         location.reload()
     }
@@ -72,3 +100,9 @@
     {/if}
     
 </div>
+
+<style>
+    :global(hr){
+        border: 2px solid white;
+    }
+</style>
