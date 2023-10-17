@@ -37,6 +37,12 @@
             }
         })
 
+        data.querySelectorAll(".wp-block-ub-content-toggle-accordion-content-wrap").forEach((el)=>{
+            el.childNodes.forEach((child)=>{
+                child.appendChild(document.createElement("hr"))
+            })
+        })
+
         translateDate = data.body.innerHTML
     })
     
