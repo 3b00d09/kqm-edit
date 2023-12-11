@@ -16,7 +16,21 @@
         } 
         translateDate = JSON.parse(translateDate)
         const data = new DOMParser().parseFromString(translateDate, "text/html")
-        data.querySelectorAll(".wp-block-ub-tabbed-content").forEach((el, i)=>{
+
+        data.querySelectorAll("video").forEach((video)=>{
+            video.remove();
+        })
+
+        data.querySelectorAll("img").forEach((img)=>{
+            img.remove();
+        })
+
+        data.querySelectorAll("iframe").forEach((iframe)=>{
+            iframe.remove();
+        })
+
+        // tabbed content
+        data.querySelectorAll(".wp-block-ub-tabbed-content").forEach((el)=>{
             // gets rid of all the headers of the tabs
             if(el.firstChild) el.removeChild(el.firstChild)
             el.childNodes.forEach((child)=>{
@@ -25,6 +39,7 @@
             })
         })
 
+        // accordions
         data.querySelectorAll(".wp-block-ub-tabbed-content-accordion-toggle").forEach((el)=>{
             el.remove()
         })
@@ -43,14 +58,28 @@
             })
         })
 
+        // content filters
+
+        // remove filter header section because every filter section starts with header 
+        data.querySelectorAll(".ub-content-filter-category").forEach((header)=>{
+            header.remove()
+        })
+
         translateDate = data.body.innerHTML
     })
     
     const setTranslateData = () =>{
-        const trimmed = textareaContent.replace(/<img[^>]*>|<figure[^>]*>[\s\S]*?<\/figure>|<a[^>]*>[\s\S]*?<\/a>|style="[^"]*"/g, '')
+        const trimmed = textareaContent //remove style tags
+                                        .replace(/style="[^"]*"/g, '')
+                                        // removes <a> tags but keep text content
+                                        .replace(/<a[^>]*>(.*?)<\/a>/g, '$1')
+                                        // remove whitespace
                                         .replace(/>\s+</g, '><')
+                                        // removes comments
                                         .replace(/<!--.*?-->/g, '')
+                                        // removes script tags
                                         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                                        // replaces headers with a horizontal break
                                         .replace(/<h[123456]/g, '<hr>$&')
                                         .trim();
 
