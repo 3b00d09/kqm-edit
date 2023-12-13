@@ -8,11 +8,13 @@ import tabbedContentToMarkdown from "./functions/tabbedContentToMarkdown"
 import removeImages from "./functions/removeImages"
 import filterToMarkdown from "./functions/filterToMarkdown"
 import captionToText from "./functions/captionToText"
+import replaceBR from "./functions/linebreaks"
 
 export default function HtmlToMarkdown(HtmlDocument:Document){
 
    HtmlDocument =  headerToMarkdown(HtmlDocument)
    HtmlDocument = convertTableToMarkdown(HtmlDocument)
+   HtmlDocument = replaceBR(HtmlDocument)
    HtmlDocument = paragraphToMarkdown(HtmlDocument)
    HtmlDocument = listToMarkdown(HtmlDocument)
    HtmlDocument = linksToMarkdown(HtmlDocument)
@@ -21,6 +23,7 @@ export default function HtmlToMarkdown(HtmlDocument:Document){
    HtmlDocument = removeImages(HtmlDocument)
    HtmlDocument = filterToMarkdown(HtmlDocument)
    HtmlDocument = captionToText(HtmlDocument)
+   
    
    
     return HtmlDocument

@@ -7,7 +7,7 @@ export default function paragraphToMarkdown(doc:Document){
             if(el.textContent) el.replaceWith(" " + el.innerText + " ")
         })
 
-        paragraph.replaceWith("\n",paragraph.innerHTML, "\n")
+        paragraph.replaceWith("\n",paragraph.innerText, "\n")
     })
 
     // my attempt at grabbing text from divs (idk if it actually works properly but it kind of does)
