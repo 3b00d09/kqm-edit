@@ -4,10 +4,10 @@ export default function paragraphToMarkdown(doc:Document){
         // <strong> will get mixed in with <p> and looks yikes
         paragraph.querySelectorAll("strong").forEach((el) =>{
             
-            if(el.textContent) el.replaceWith("\n \n" + el.innerText + "\n \n")
+            if(el.textContent) el.replaceWith(" " + el.innerText + " ")
         })
 
-        paragraph.replaceWith("\n",paragraph.innerText, "\n")
+        paragraph.replaceWith("\n",paragraph.innerHTML, "\n")
     })
 
     // my attempt at grabbing text from divs (idk if it actually works properly but it kind of does)

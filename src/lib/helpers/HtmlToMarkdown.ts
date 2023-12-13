@@ -7,6 +7,7 @@ import accordionToMarkdown from "./functions/accordionToMarkdown"
 import tabbedContentToMarkdown from "./functions/tabbedContentToMarkdown"
 import removeImages from "./functions/removeImages"
 import filterToMarkdown from "./functions/filterToMarkdown"
+import captionToText from "./functions/captionToText"
 
 export default function HtmlToMarkdown(HtmlDocument:Document){
 
@@ -19,6 +20,7 @@ export default function HtmlToMarkdown(HtmlDocument:Document){
    HtmlDocument = tabbedContentToMarkdown(HtmlDocument)
    HtmlDocument = removeImages(HtmlDocument)
    HtmlDocument = filterToMarkdown(HtmlDocument)
+   HtmlDocument = captionToText(HtmlDocument)
    
    
     return HtmlDocument

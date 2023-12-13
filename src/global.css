@@ -102,4 +102,5 @@ ul {
 tr, td, th{
   @apply border-gray-500;
   @apply border-4;
+  @apply text-left;
 }
