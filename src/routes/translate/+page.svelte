@@ -71,8 +71,6 @@
     const setTranslateData = () =>{
         const trimmed = textareaContent //remove style tags
                                         .replace(/style="[^"]*"/g, '')
-                                        // removes <a> tags but keep text content
-                                        .replace(/<a[^>]*>(.*?)<\/a>/g, '$1')
                                         // remove whitespace
                                         .replace(/>\s+</g, '><')
                                         // removes comments
